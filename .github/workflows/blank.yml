@@ -1,0 +1,22 @@
+name: Create Redmine issue when GitHub issue is created
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  sync-to-redmine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create issue in Redmine
+        run: |
+          curl -X POST https://1927-14-187-80-86.ngrok-free.app/issues.json \
+            -H "Content-Type: application/json" \
+            -H "X-Redmine-API-Key: ${{ secrets.REDMINE_API_KEY }}" \
+            -d '{
+              "issue": {
+                "project_id": "4",
+                "subject": "${{ github.event.issue.title }}",
+                "description": "${{ github.event.issue.body }}"
+              }
+            }'
